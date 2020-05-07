@@ -16,7 +16,7 @@ import (
 
 func main() {
 	s := NewServer()
-	fmt.Println(http.ListenAndServe(":8080", s.router))
+	fmt.Println(http.ListenAndServe(":8084", s.router))
 }
 
 func buildIndex(bibtexFile []byte) (bleve.Index, error) {
