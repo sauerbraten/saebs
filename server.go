@@ -57,7 +57,19 @@ func (s *Server) swapIndex(index bleve.Index) error {
 }
 
 func (s *Server) landingPage(w http.ResponseWriter, r *http.Request) {
-	// server some static HTML
+	tmpl, err := template.
+		New("base.tmpl"). // must be the base template (entry point) so templates are associated correctly by ParseFiles()
+		Funcs(template.FuncMap{"titlecase": strings.Title}).
+		Option("missingkey=error").
+		ParseFiles("templates/base.tmpl", "templates/search_form.tmpl", "templates/upload_form.tmpl", "templates/front.tmpl")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (s *Server) recreateIndex(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +98,7 @@ func (s *Server) recreateIndex(w http.ResponseWriter, r *http.Request) {
 
 	s.swapIndex(index)
 
-	fmt.Fprintln(w, "index recreated")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (s *Server) stats(w http.ResponseWriter, r *http.Request) {
@@ -105,8 +117,8 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 	// parse query from request
 	queryString := strings.TrimSpace(r.FormValue("q"))
 	if queryString == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(w, "query must not be empty")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 	queryExpression := parseQuery(queryString)
 
@@ -151,7 +163,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 		New("base.tmpl"). // must be the base template (entry point) so templates are associated correctly by ParseFiles()
 		Funcs(template.FuncMap{"titlecase": strings.Title}).
 		Option("missingkey=error").
-		ParseFiles("templates/base.tmpl", "templates/search_form.tmpl", "templates/search_results.tmpl")
+		ParseFiles("templates/base.tmpl", "templates/search_form.tmpl", "templates/upload_form.tmpl", "templates/search_results.tmpl")
 	if err != nil {
 		log.Fatalln(err)
 	}

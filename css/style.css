@@ -68,6 +68,19 @@ input[type="search"] {
   font-size: 1.25em;
 }
 
+form.uploadform {
+  margin: 3em auto;
+}
+
+label.file {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}
+
 label > input:first-child,
 label > select:first-child {
   margin-right: 0.5em;

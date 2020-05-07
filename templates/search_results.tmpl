@@ -1,6 +1,7 @@
 {{define "title"}}{{.Query}} – Literatursuche{{end}}
 
 {{define "content"}}
+
 {{template "search_form" .}}
 
 {{if len .Results}}
@@ -9,31 +10,32 @@
 		Ergebnisse{{end}} für <em>{{.Query}}</em>:</h2>
 </header>
 
-<main>
-	<ul>
-		{{range .Results}}
-		<li>
-			<h3>{{.Title}}</h3>
-			<p class="indented"><em>{{.Authors}}, {{.Year}}</em></p>
-			{{if len .Abstract}}<p class="justified">{{.Abstract}}</p>{{end}}
-			{{if len .OtherFields}}
-			<small>
-				<table>
-					{{range $key, $value := .OtherFields}}
-					<tr><td>{{titlecase $key}}</td><td>{{$value}}</td></tr>
-					{{end}}
-				</table>
-			</small>
-			{{end}}
-			<p><small class="grey">{{.Keywords}}</small></p>
-		</li>
+<ul>
+	{{range .Results}}
+	<li>
+		<h3>{{.Title}}</h3>
+		<p class="indented"><em>{{.Authors}}, {{.Year}}</em></p>
+		{{if len .Abstract}}<p class="justified">{{.Abstract}}</p>{{end}}
+		{{if len .OtherFields}}
+		<small>
+			<table>
+				{{range $key, $value := .OtherFields}}
+				<tr><td>{{titlecase $key}}</td><td>{{$value}}</td></tr>
+				{{end}}
+			</table>
+		</small>
 		{{end}}
-	</ul>
-</main>
+		<p><small class="grey">{{.Keywords}}</small></p>
+	</li>
+	{{end}}
+</ul>
 
 {{else}}
 <header class="results-header">
 	<h2>Keine Ergebnisse für {{.Query}}!</h2>
 </header>
 {{end}}
+
+{{template "upload_form" .}}
+
 {{end}}

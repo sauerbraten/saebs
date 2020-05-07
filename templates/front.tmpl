@@ -1,0 +1,11 @@
+{{define "content"}}
+
+<form class="searchform text-center" action="/search" method="get">
+	<input type="search" name="q" class="searchbox" placeholder="search query"
+		autofocus />
+	<input type="submit" value="Search" />
+</form>
+
+{{template "upload_form"}}
+
+{{end}}

@@ -1,0 +1,13 @@
+{{define "upload_form"}}
+
+<form class="uploadform text-center" action="/recreateIndex" method="post"
+	enctype="multipart/form-data">
+	<label class="file">
+		<input type="file" name="bibtex"
+			accept=".bib,text/x-bibtex,application/x-bibtex" />
+		Bibtex-Datei auswählen
+	</label>
+	<input type="submit" value="Index neu bauen" />
+</form>
+
+{{end}}
