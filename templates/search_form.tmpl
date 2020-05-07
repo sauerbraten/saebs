@@ -1,0 +1,7 @@
+{{define "search_form"}}
+<form class="searchform text-center" action="/search" method="get">
+	<input type="search" name="q" class="searchbox" placeholder="(stutter AND male)
+		OR (speech AND female)" value="{{.Query}}" autofocus />
+	<input type="submit" value="Search" />
+</form>
+{{end}}
