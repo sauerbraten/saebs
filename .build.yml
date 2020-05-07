@@ -18,4 +18,4 @@ tasks:
       cd saebs
       rsync --rsh="ssh -o StrictHostKeyChecking=no" -rPq css templates saebs ci@$DEPLOY:~/saebs/
       ssh -o StrictHostKeyChecking=no ci@$DEPLOY 'killall saebs || true'
-      ssh -o StrictHostKeyChecking=no ci@$DEPLOY 'cd saebs; nohup ./sabes >> log.txt 2>&1 &'
+      ssh -o StrictHostKeyChecking=no ci@$DEPLOY 'cd saebs; nohup ./saebs >> log.txt 2>&1 &'
