@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
-	"time"
 
 	"github.com/blevesearch/bleve"
 	"github.com/blevesearch/bleve/analysis/lang/en"
@@ -20,14 +18,28 @@ func main() {
 	fmt.Println(http.ListenAndServe(":8084", s.router))
 }
 
+const LatestIndexDiscoveryFile = "latest_index"
+
+func findLatestIndex() (bleve.Index, error) {
+	contents, err := ioutil.ReadFile(LatestIndexDiscoveryFile)
+	if err != nil {
+		return nil, fmt.Errorf("finding latest existing index: %w", err)
+	}
+	indexName := string(contents)
+	return bleve.Open(indexName)
+}
+
 func buildIndex(bibtexFile []byte) (bleve.Index, error) {
 	// create new index
-	mapping := buildIndexMapping()
-	indexName, err := ioutil.TempDir(".", strconv.FormatInt(time.Now().Unix(), 10)+"_*")
+	indexName, err := ioutil.TempDir(".", "index_")
 	if err != nil {
 		return nil, fmt.Errorf("creating index name: %w", err)
 	}
-	index, err := bleve.New(indexName, mapping)
+	err = ioutil.WriteFile(LatestIndexDiscoveryFile, []byte(indexName), 0644)
+	if err != nil {
+		return nil, fmt.Errorf("writing new index name to discovery file: %w", err)
+	}
+	index, err := bleve.New(indexName, buildIndexMapping())
 	if err != nil {
 		return nil, fmt.Errorf("creating index: %w", err)
 	}

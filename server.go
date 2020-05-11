@@ -22,10 +22,16 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	// create dummy index to prevent nil pointer
-	i, err := bleve.NewMemOnly(bleve.NewIndexMapping())
+	// try to restore mapping from fs
+	i, err := findLatestIndex()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		fmt.Println("falling back to in-memory dummy index")
+		// create dummy index to prevent nil pointer
+		i, err = bleve.NewMemOnly(bleve.NewIndexMapping())
+		if err != nil {
+			panic(err)
+		}
 	}
 	s := &Server{
 		index: i,
