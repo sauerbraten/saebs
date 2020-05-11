@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,6 +11,8 @@ import (
 	"github.com/blevesearch/bleve/analysis/lang/en"
 	"github.com/blevesearch/bleve/mapping"
 	"github.com/caltechlibrary/bibtex"
+
+	"saebs/uuid"
 )
 
 func main() {
@@ -41,14 +42,10 @@ func buildIndex(bibtexFile []byte) (bleve.Index, error) {
 
 	// index in bleve
 	for _, ref := range references {
-		if len(ref.Keys) < 1 {
-			return nil, fmt.Errorf("reference has no keys:\n%s", ref)
-		}
-		err = index.Index(ref.Keys[0], ref)
+		err = index.Index(uuid.NewV4().String(), ref)
 		if err != nil {
 			return nil, fmt.Errorf("indexing %s: %w", ref.Keys[0], err)
 		}
-		log.Println("indexed", ref.Keys[0])
 	}
 
 	return index, nil
