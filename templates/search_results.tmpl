@@ -14,7 +14,7 @@
 	{{range .Results}}
 	<li>
 		<h3>{{.Title}}</h3>
-		<p class="indented"><em>{{.Authors}}, {{.Year}}</em></p>
+		<p class="indented"><em>{{if len .Authors}}{{.Authors}}, {{end}}{{.Year}}</em></p>
 		{{if len .Abstract}}<p class="justified">{{.Abstract}}</p>{{end}}
 		{{if len .OtherFields}}
 		<small>
