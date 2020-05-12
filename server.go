@@ -154,7 +154,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	search := bleve.NewSearchRequest(query)
+	search := bleve.NewSearchRequestOptions(query, 100_000, 0, false)
 	search.Fields = []string{"*"}
 	searchResults, err := s.index.Search(search)
 	if err != nil {
