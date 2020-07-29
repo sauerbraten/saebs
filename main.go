@@ -68,13 +68,17 @@ func buildIndexMapping() mapping.IndexMapping {
 	englishTextFieldMapping := bleve.NewTextFieldMapping()
 	englishTextFieldMapping.Analyzer = en.AnalyzerName
 
-	bibtexElementMapping := bleve.NewDocumentStaticMapping()
+	tagsMapping := bleve.NewDocumentMapping()
+	tagsMapping.AddFieldMappingsAt("title", englishTextFieldMapping)
+	tagsMapping.AddFieldMappingsAt("abstract", englishTextFieldMapping)
+	tagsMapping.AddFieldMappingsAt("keywords", englishTextFieldMapping)
 
-	bibtexElementMapping.AddFieldMappingsAt("Tags.title", englishTextFieldMapping)
-	bibtexElementMapping.AddFieldMappingsAt("Tags.abstract", englishTextFieldMapping)
-	bibtexElementMapping.AddFieldMappingsAt("Tags.keywords", englishTextFieldMapping)
+	bibtexElementMapping := bleve.NewDocumentMapping()
+	bibtexElementMapping.AddSubDocumentMapping("tags", tagsMapping)
 
 	indexMapping := bleve.NewIndexMapping()
+	indexMapping.StoreDynamic = true
+	indexMapping.IndexDynamic = false
 	indexMapping.DefaultMapping = bibtexElementMapping
 	indexMapping.DefaultAnalyzer = "en"
 
