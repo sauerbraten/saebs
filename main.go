@@ -68,8 +68,9 @@ func buildIndexMapping() mapping.IndexMapping {
 	englishTextFieldMapping := bleve.NewTextFieldMapping()
 	englishTextFieldMapping.Analyzer = en.AnalyzerName
 
-	bibtexElementMapping := bleve.NewDocumentMapping()
+	bibtexElementMapping := bleve.NewDocumentStaticMapping()
 
+	bibtexElementMapping.AddFieldMappingsAt("Tags.title", englishTextFieldMapping)
 	bibtexElementMapping.AddFieldMappingsAt("Tags.abstract", englishTextFieldMapping)
 	bibtexElementMapping.AddFieldMappingsAt("Tags.keywords", englishTextFieldMapping)
 
