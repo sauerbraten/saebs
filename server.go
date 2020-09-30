@@ -173,19 +173,46 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 			tags := map[string]string{}
 
 			// collect tags
-			for k, v := range hit.Fields {
+			for k, _v := range hit.Fields {
 				if !strings.HasPrefix(k, "tags.") {
+					continue
+				}
+				v, ok := _v.(string)
+				if !ok {
 					continue
 				}
 				// cut 'tags.' from key
 				k = k[len("tags."):]
 				// set cleaned up value
-				tags[k] = strings.Trim(v.(string), "{}")
+
+				tags[k] = strings.Trim(v, "{}")
+			}
+
+			_id := hit.Fields["keys"]
+			if _id == nil {
+				log.Printf("%#v has nil key (fields: %#v)", hit, hit.Fields)
+				continue
+			}
+			id, ok := _id.(string)
+			if !ok {
+				log.Printf("%#v has non-string key %v (fields: %#v)", hit, _id, hit.Fields)
+				continue
+			}
+
+			_type := hit.Fields["type"]
+			if _type == nil {
+				log.Printf("%#v has nil type (fields: %#v)", hit, hit.Fields)
+				continue
+			}
+			typ, ok := _type.(string)
+			if !ok {
+				log.Printf("%#v has non-string type %v (fields: %#v)", hit, _type, hit.Fields)
+				continue
 			}
 
 			e := &bibtex.Element{
-				ID:   hit.Fields["keys"].(string),
-				Type: hit.Fields["type"].(string),
+				ID:   id,
+				Type: typ,
 				Tags: tags,
 			}
 
