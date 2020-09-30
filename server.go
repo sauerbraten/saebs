@@ -190,7 +190,6 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 
 			_id := hit.Fields["keys"]
 			if _id == nil {
-				log.Printf("%#v has nil key (fields: %#v)", hit, hit.Fields)
 				_id = ""
 			}
 			id, ok := _id.(string)
@@ -201,7 +200,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 
 			_type := hit.Fields["type"]
 			if _type == nil {
-				log.Printf("%#v has nil type (fields: %#v)", hit, hit.Fields)
+				log.Printf("%#v has nil type (fields: %#v), using 'article'", hit, hit.Fields)
 				_type = "article" // sensible default I guess
 			}
 			typ, ok := _type.(string)
