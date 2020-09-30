@@ -8,6 +8,7 @@
 <header class="results-header">
 	<h2>{{len .Results}} {{if eq (len .Results) 1}}Ergebnis{{else}}
 		Ergebnisse{{end}} für <em>{{.Query}}</em>:</h2>
+		<a href="?q={{.Query}}&format=bibfile">Herunterladen</a>
 </header>
 
 <ul>

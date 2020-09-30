@@ -78,6 +78,11 @@ func splitAtOps(s string) []string {
 	parts := []string{}
 
 	lenOp, offset := nextOp(s)
+	// unpack `(((expr)))` to `expr`
+	for offset == -1 && strings.HasPrefix(s, "(") && strings.HasSuffix(s, ")") {
+		s = s[1 : len(s)-1]
+		lenOp, offset = nextOp(s)
+	}
 	for offset != -1 {
 		if offset == 0 {
 			panic("operator at start of string!")

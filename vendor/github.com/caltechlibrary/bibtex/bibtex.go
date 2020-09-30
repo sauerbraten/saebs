@@ -196,9 +196,9 @@ func (element *Element) String() string {
 	if len(element.Tags) > 0 {
 		for ky, val := range element.Tags {
 			if len(val) != 0 {
-				out = append(out, fmt.Sprintf("    %s = %q,\n", ky, val))
+				out = append(out, fmt.Sprintf(`    %s = "%s",`, ky, val), "\n")
 			} else {
-				out = append(out, fmt.Sprintf("    %q,\n", ky))
+				out = append(out, fmt.Sprintf(`    "%s",`, ky), "\n")
 			}
 		}
 	}

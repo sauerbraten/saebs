@@ -12,6 +12,7 @@ import (
 
 	"github.com/blevesearch/bleve"
 	"github.com/blevesearch/bleve/search/query"
+	"github.com/caltechlibrary/bibtex"
 	"github.com/go-chi/chi"
 )
 
@@ -120,6 +121,8 @@ func (s *Server) stats(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) search(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.FormValue("q"))
+
 	// parse query from request
 	queryString := strings.TrimSpace(r.FormValue("q"))
 	if queryString == "" {
@@ -160,6 +163,34 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, err)
+		return
+	}
+
+	if r.FormValue("format") == "bibfile" {
+		w.Header().Add("Content-Disposition", fmt.Sprintf(`attachment; filename="%s.bib"`, r.FormValue("q")))
+		w.WriteHeader(http.StatusOK)
+		for _, hit := range searchResults.Hits {
+			tags := map[string]string{}
+
+			// collect tags
+			for k, v := range hit.Fields {
+				if !strings.HasPrefix(k, "tags.") {
+					continue
+				}
+				// cut 'tags.' from key
+				k = k[len("tags."):]
+				// set cleaned up value
+				tags[k] = strings.Trim(v.(string), "{}")
+			}
+
+			e := &bibtex.Element{
+				ID:   hit.Fields["keys"].(string),
+				Type: hit.Fields["type"].(string),
+				Tags: tags,
+			}
+
+			w.Write([]byte(e.String()))
+		}
 		return
 	}
 
