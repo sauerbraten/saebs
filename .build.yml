@@ -1,13 +1,13 @@
-image: alpine/edge
+image: fedora/32
 packages:
   - go
   - rsync
 sources:
   - https://github.com/sauerbraten/saebs
 environment:
-  DEPLOY: chef.p1x.pw
+  DEPLOY: p1x.pw
 secrets:
-  - 41a695fb-4229-450d-9aa4-5499f6bcea81
+  - 956ddc04-c911-4147-bc90-30bb08276c3e # ci@p1x.pw ssh key
 tasks:
   - prepare_go_modules: |
       go env -w GOFLAGS=-mod=vendor
@@ -17,5 +17,4 @@ tasks:
   - deploy: |
       cd saebs
       rsync --rsh="ssh -o StrictHostKeyChecking=no" -rPq css templates saebs ci@$DEPLOY:~/saebs/
-      ssh -o StrictHostKeyChecking=no ci@$DEPLOY 'killall saebs || true'
-      ssh -o StrictHostKeyChecking=no ci@$DEPLOY 'cd saebs; nohup ./saebs >> log.txt 2>&1 &'
+      ssh -o StrictHostKeyChecking=no ci@$DEPLOY 'sudo systemctl restart saebs'
